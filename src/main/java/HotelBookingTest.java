@@ -1,14 +1,20 @@
-import com.sun.javafx.PlatformUtil;
+import java.util.logging.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class HotelBookingTest {
+	Logger logger = Logger.getLogger(SignInTest.class.getName());
 
-    WebDriver driver = new ChromeDriver();
+    WebDriver driver = null;
+    
+    public HotelBookingTest(){
+    	this.driver = DriverUtil.getInstance().driver;
+    	PageFactory.initElements(driver, this);
+    }
 
     @FindBy(linkText = "Hotels")
     private WebElement hotelLink;
@@ -24,30 +30,11 @@ public class HotelBookingTest {
 
     @Test
     public void shouldBeAbleToSearchForHotels() {
-        setDriverPath();
-
-        driver.get("https://www.cleartrip.com/");
+        driver.get(Constant.BASE_URL);
         hotelLink.click();
-
-        localityTextBox.sendKeys("Indiranagar, Bangalore");
-
-        new Select(travellerSelection).selectByVisibleText("1 room, 2 adults");
+        localityTextBox.sendKeys(Constant.INDIRANAGAR_BANGALORE);
+        new Select(travellerSelection).selectByVisibleText(Constant.SEARCH_ONE_ROOM_FOR_TWO_ADULT);
         searchButton.click();
-
         driver.quit();
-
     }
-
-    private void setDriverPath() {
-        if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
-        }
-        if (PlatformUtil.isWindows()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-        }
-        if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
-        }
-    }
-
 }
